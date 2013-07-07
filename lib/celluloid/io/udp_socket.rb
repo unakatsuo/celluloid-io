@@ -10,7 +10,7 @@ module Celluloid
       end
 
       # Wait until the socket is readable
-      def wait_readable; Celluloid::IO.wait_readable(self); end
+      def wait_readable(timeout = nil); Celluloid::IO.wait_readable(self, timeout); end
 
       # Receives up to maxlen bytes from socket. flags is zero or more of the
       # MSG_ options. The first element of the results, mesg, is the data

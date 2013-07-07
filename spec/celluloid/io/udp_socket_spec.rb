@@ -21,6 +21,18 @@ describe Celluloid::IO::UDPSocket do
         subject.recvfrom(payload.size).first.should == payload
       end
     end
+
+    context "wait_readable" do
+      it "raises Celluloid::IO::Reactor::WaitTimeout when gets only partial bytes" do
+        within_io_actor do
+          subject.send payload[0,payload.size/2], 0, example_addr, example_port
+          expect {
+            subject.recvfrom_nonblock(payload.size)
+            subject.wait_readable(0.001)
+          }.to raise_error(Celluloid::IO::Reactor::WaitTimeout)
+        end
+      end
+    end
   end
 
   context "outside Celluloid::IO" do

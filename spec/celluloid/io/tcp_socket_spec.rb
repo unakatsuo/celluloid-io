@@ -79,6 +79,20 @@ describe Celluloid::IO::TCPSocket do
       }.to raise_error(Errno::ECONNREFUSED)
     end
 
+    context "wait_readable" do
+      it "raises Celluloid::IO::Reactor::WaitTimeout when gets only partial bytes" do
+        with_connected_sockets do |subject, peer|
+          peer << payload[0,payload.size/2]
+          expect {
+            within_io_actor {
+              subject.read_nonblock(payload.size)
+              subject.wait_readable(0.001)
+            }
+          }.to raise_error(Celluloid::IO::Reactor::WaitTimeout)
+        end
+      end
+    end
+
     context "readpartial" do
       it "raises EOFError when reading from a closed socket" do
         with_connected_sockets do |subject, peer|

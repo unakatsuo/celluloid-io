@@ -30,10 +30,10 @@ module Celluloid
       end
 
       # Wait until the current object is readable
-      def wait_readable; Celluloid::IO.wait_readable(self); end
+      def wait_readable(timeout = nil); Celluloid::IO.wait_readable(self, timeout); end
 
       # Wait until the current object is writable
-      def wait_writable; Celluloid::IO.wait_writable(self); end
+      def wait_writable(timeout = nil); Celluloid::IO.wait_writable(self, timeout); end
 
       # System read via the nonblocking subsystem
       def sysread(length = nil, buffer = nil)
