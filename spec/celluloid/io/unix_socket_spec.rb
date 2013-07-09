@@ -92,6 +92,15 @@ describe Celluloid::IO::UNIXSocket do
         }.to raise_error(EOFError)
       end
     end
+
+    it "blocks actor until eof? gets the first byte" do
+      with_connected_unix_sockets do |subject, peer|
+        start = Time.now
+        Thread.new{ sleep 0.5; peer.close; }
+        within_io_actor { subject.eof? }
+        (Time.now - start).should > 0.5
+      end
+    end
   end
 
   context "outside Celluloid::IO" do

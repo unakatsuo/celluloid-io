@@ -79,6 +79,15 @@ describe Celluloid::IO::TCPSocket do
       }.to raise_error(Errno::ECONNREFUSED)
     end
 
+    it "blocks actor until eof? gets the first byte" do
+      with_connected_sockets do |subject, peer|
+        start = Time.now
+        Thread.new{ sleep 0.5; peer.close; }
+        within_io_actor { subject.eof? }
+        (Time.now - start).should > 0.5
+      end
+    end
+
     context "readpartial" do
       it "raises EOFError when reading from a closed socket" do
         with_connected_sockets do |subject, peer|

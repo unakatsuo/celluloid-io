@@ -312,6 +312,17 @@ module Celluloid
         sysclose
       end
 
+      # Check if the stream reached to EOF.
+      #
+      # IO#eof?/eof is a blocking method so wait_readable needs to be
+      # called until receive the first byte.
+      def eof?
+        sysread(0)
+
+        to_io.eof?
+      end
+      alias_method :eof, :eof?
+
       #######
       private
       #######
